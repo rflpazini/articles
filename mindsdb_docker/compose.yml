@@ -4,13 +4,13 @@ services:
   mindsdb:
     image: mindsdb/mindsdb:lightwood
     ports:
-     - "47336:47334"
-     - "47337:47335"
+     - "47334:47334"
+     - "47335:47335"
 
   mysql:
     image: mysql:lts
     ports:
-     - "3307:3306"
+     - "3306:3306"
     volumes:
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
     environment: 
