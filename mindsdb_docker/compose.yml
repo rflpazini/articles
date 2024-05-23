@@ -1,0 +1,20 @@
+name: "mindsdb_sample"
+
+services:
+  mindsdb:
+    image: mindsdb/mindsdb:lightwood
+    ports:
+     - "47336:47334"
+     - "47337:47335"
+
+  mysql:
+    image: mysql:lts
+    ports:
+     - "3307:3306"
+    volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment: 
+      - MYSQL_ROOT_PASSWORD=r00tPassword123
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=am@zingPassword123
+      - MYSQL_DATABASE=cool_data
