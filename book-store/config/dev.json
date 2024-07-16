@@ -1,0 +1,12 @@
+{
+  "server": {
+    "port": 8080,
+    "appName": "book-store",
+    "appVersion": "v0.0.1"
+  },
+  "database": {
+    "uri": "postgresql://user:S3cret@localhost:5432/book-store",
+    "name": "book-store",
+    "timeout": 30000
+  }
+}
