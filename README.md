@@ -5,15 +5,6 @@ Welcome to the repository where I store files and projects used as samples in my
 
 Here, you'll find an organized collection of code, scripts, and complete projects that accompany the topics covered in my articles on Medium, LinkedIn, and other platforms.
 
-## Getting Started
-To clone the repository and start exploring, follow the instructions below:
-
-```bash
-git clone https://github.com/yourusername/yourrepo.git
-cd yourrepo
-```
-Each folder within this repository contains a specific README with more details about the project or sample stored there.
-
 ## Projects and Samples
 Here is a list of the projects and samples available in the repository:
 
