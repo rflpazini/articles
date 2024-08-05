@@ -23,6 +23,8 @@ Scripts and configurations used in the article Optimizing JVM Startup and Increa
 2. [Testcontainers + Golang: Melhorando seus testes com Docker](https://dev.to/rflpazini/testcontainers-golang-melhorando-seus-testes-com-docker-2hb7):
 Code examples using the [testcontainer](https://testcontainers.com/guides/getting-started-with-testcontainers-for-go/) library, as detailed in my articles on testing in Go.
 
+3. [Design Patterns](https://dev.to/rflpazini/design-patterns-3ie6): Code examples using Builder, Singleton and Factory patterns
+
 ...add more as needed...
 
 ## Contribution Guidelines
