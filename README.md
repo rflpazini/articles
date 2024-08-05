@@ -17,10 +17,10 @@ Each folder within this repository contains a specific README with more details 
 ## Projects and Samples
 Here is a list of the projects and samples available in the repository:
 
-1. [MindsDB + Docker: Utilizando SQL e containers para integrações com IA](https://dev.to/rflpazini/mindsdb-docker-utilizando-sql-e-containers-para-integracoes-com-ia-edc)
+1. [MindsDB + Docker: Utilizando SQL e containers para integrações com IA](https://dev.to/rflpazini/mindsdb-docker-utilizando-sql-e-containers-para-integracoes-com-ia-edc):
 Scripts and configurations used in the article Optimizing JVM Startup and Increasing Application Efficiency in Containers.
 
-2. [Testcontainers + Golang: Melhorando seus testes com Docker](https://dev.to/rflpazini/testcontainers-golang-melhorando-seus-testes-com-docker-2hb7)
+2. [Testcontainers + Golang: Melhorando seus testes com Docker](https://dev.to/rflpazini/testcontainers-golang-melhorando-seus-testes-com-docker-2hb7):
 Code examples using the [testcontainer](https://testcontainers.com/guides/getting-started-with-testcontainers-for-go/) library, as detailed in my articles on testing in Go.
 
 ...add more as needed...
