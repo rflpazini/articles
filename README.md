@@ -1,7 +1,7 @@
 # articles
-![articles-background](https://i.imgur.com/gxDMsNL.png)
-
 Welcome to the repository where I store files and projects used as samples in my technical articles! 🚀
+
+![articles-background](https://i.imgur.com/gxDMsNL.png)
 
 Here, you'll find an organized collection of code, scripts, and complete projects that accompany the topics covered in my articles on Medium, LinkedIn, and other platforms.
 
