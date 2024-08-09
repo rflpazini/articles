@@ -61,6 +61,18 @@ docker-compose up --build
 The application is configured using environment variables. You can set these variables in the `compose.yaml` file or directly in your shell environment.
 
 
+### Running tests
+
+- To run unit tests only:
+```bash
+go test ./...
+```
+
+- To run integration tests, you should pass the tag `integration` during the build
+```bash
+go test ./... -tags=integration
+```
+
 ### API Endpoints
 
 - POST /v1/shortener: Shorten a new URL.
