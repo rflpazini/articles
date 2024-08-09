@@ -15,8 +15,8 @@ import (
 )
 
 type Service struct {
-	*Repository
-	Json jsoniter.API
+	Repository RepositoryInterface
+	Json       jsoniter.API
 }
 
 func (s Service) Upsert(c echo.Context) error {

@@ -8,6 +8,12 @@ import (
 
 const tableName = "shortener"
 
+type RepositoryInterface interface {
+	Get(ctx context.Context, key string) (string, error)
+	Set(ctx context.Context, u *URLInfo) error
+	GetAll(ctx context.Context) (map[string]string, error)
+}
+
 type Repository struct {
 	*redis.Client
 }

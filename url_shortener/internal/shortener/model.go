@@ -13,7 +13,6 @@ type URLInfo struct {
 
 func (m URLInfo) UnmarshalBinary(data []byte) error {
 	json := jsoniter.ConfigCompatibleWithStandardLibrary
-	// convert data to yours, let's assume its json data
 	return json.Unmarshal(data, m)
 }
 
