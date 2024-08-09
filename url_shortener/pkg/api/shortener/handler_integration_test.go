@@ -66,7 +66,7 @@ func TestIntegration_RegisterRoutes(t *testing.T) {
 			url:            "/v1/shortener",
 			body:           `{"url":"https://example.com"}`,
 			expectedStatus: http.StatusCreated,
-			expectedBody:   "", // add expected body if needed
+			expectedBody:   `"url":"https://example.com"`,
 		},
 		{
 			name:           "GET /v1/shortener - Retrieve short URL",
