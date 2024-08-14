@@ -1,11 +1,14 @@
+# syntax=docker/dockerfile:1
+
 # Build stage
 FROM golang:1.22-alpine AS builder
 WORKDIR /app
-COPY . .
+COPY go.mod go.sum ./
 RUN go mod download
+COPY . .
 RUN go build -o url-shortener ./cmd
 
-# Final stage
+# Final stage with Scratch
 FROM scratch
 WORKDIR /app
 COPY --from=builder /app/url-shortener .

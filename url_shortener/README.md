@@ -10,7 +10,7 @@
 url_shortener
 ├── cmd
 │   └── main.go                   # Entry point of the application
-├── compose.yaml                  # Docker Compose configuration
+├── compose.yml                  # Docker Compose configuration
 ├── go.mod                        # Go module file
 ├── go.sum                        # Go dependencies checksum file
 ├── internal

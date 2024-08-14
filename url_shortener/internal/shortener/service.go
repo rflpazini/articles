@@ -22,6 +22,8 @@ type Service struct {
 func (s Service) Upsert(c echo.Context) error {
 	u := new(URLInfo)
 	if err := c.Bind(u); err != nil {
+		fmt.Println(err)
+		log.Errorf("error during upsert: %v", err.Error())
 		return err
 	}
 
@@ -49,12 +51,14 @@ func (s Service) Get(c echo.Context) error {
 	if key == "" {
 		result, err := s.Repository.GetAll(context.Background())
 		if err != nil {
+			log.Errorf("error during get all: %v", err.Error())
 			return err
 		}
 
 		resultList, err := s.unmarshalList(result)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println(err)
+			log.Errorf("error during get %s: %v", key, err.Error())
 			return err
 		}
 		return c.JSON(http.StatusOK, resultList)
