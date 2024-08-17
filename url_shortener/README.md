@@ -9,24 +9,34 @@
 ```bash
 url_shortener
 ├── cmd
-│   └── main.go                   # Entry point of the application
-├── compose.yml                  # Docker Compose configuration
-├── go.mod                        # Go module file
-├── go.sum                        # Go dependencies checksum file
+│ └── main.go                    # Entry point of the application
 ├── internal
-│   ├── server
-│   │   └── server.go             # Server setup and initialization
-│   └── shortener
-│       ├── model.go              # Data models for URL information
-│       ├── repository.go         # Redis repository for storing URLs
-│       └── service.go            # Business logic for URL shortening
-└── pkg
-    ├── api
-    │   └── shortener
-    │       └── handler.go        # HTTP handlers for API endpoints
-    └── utils
-        └── base62
-            └── hash.go           # Base62 encoding implementation
+│ ├── monitoring
+│ │ └── prometheus.go            # Prometheus setup and monitoring
+│ ├── server
+│ │ └── server.go                # Server setup and initialization
+│ └── shortener
+│     ├── model.go               # Data models for URL information
+│     ├── repository.go          # Redis repository for storing URLs
+│     ├── service.go             # Business logic for URL shortening
+│     └── service_test.go        # Unit tests for the shortener service
+├── pkg
+│ ├── api
+│ │ └── shortener
+│ │     ├── handler.go                  # HTTP handlers for API endpoints
+│ │     └── handler_integration_test.go # Integration tests for handlers
+│ └── utils
+│     └── base62
+│         ├── hash.go              # Base62 encoding implementation
+│         └── hash_test.go         # Unit tests for Base62 encoding
+├── Dockerfile                     # Dockerfile for building the application
+├── Dockerfile.alpine              # Dockerfile for building a smaller image with Alpine
+├── Dockerfile.golang              # Dockerfile for building with Go SDK
+├── README.md                      # Project documentation
+├── compose.yml                    # Docker Compose configuration
+├── go.mod                         # Go module file
+├── go.sum                         # Go dependencies checksum file
+└── prometheus.yml                 # Prometheus configuration file
 ```
 
 ## Features
@@ -60,6 +70,24 @@ docker-compose up --build
 ### Configuration
 The application is configured using environment variables. You can set these variables in the `compose.yaml` file or directly in your shell environment.
 
+### Monitoring with Prometheus and Grafana
+The `url_shortener` application includes monitoring capabilities using Prometheus and Grafana. These tools allow you to track the performance and health of your application in real-time.
+
+##### Prometheus
+Prometheus is configured to scrape metrics from the application at the `/metrics` endpoint. The metrics include:
+
+Total HTTP Requests: Number of requests received by the application, categorized by path and method.
+Request Duration: Duration of HTTP requests in seconds.
+
+##### Grafana
+Grafana is used to visualize the metrics collected by Prometheus. It provides a powerful and flexible dashboard for monitoring the application.
+##### Setting Up Monitoring
+Prometheus and Grafana are included in the `compose.yml` configuration. When you start the application with Docker Compose, these services will be automatically started and configured.
+
+To access Grafana:
+1. Open your browser and go to http://localhost:3000.
+2. The default username and password are both admin.
+3. You can then add Prometheus as a data source and create custom dashboards to monitor the application.
 
 ### Running tests
 

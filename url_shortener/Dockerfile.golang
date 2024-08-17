@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 
 # Build stage
-FROM golang:1.22 AS builder
+FROM golang:1.23 AS builder
 WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build -o url-shortener ./cmd
 
 # Final stage
-FROM golang:1.22-alpine
+FROM golang:1.23-alpine
 WORKDIR /app
 COPY --from=builder /app/url-shortener .
 CMD ["./url-shortener"]
