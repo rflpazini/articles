@@ -7,14 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
-func ListQueues() ([]string, error) {
-	result, err := SQSClient.ListQueues(context.Background(), &sqs.ListQueuesInput{})
-	if err != nil {
-		return nil, err
-	}
-	return result.QueueUrls, nil
-}
-
 func CreateQueue(queueName string) (string, error) {
 	result, err := SQSClient.CreateQueue(context.Background(), &sqs.CreateQueueInput{
 		QueueName: &queueName,
