@@ -32,7 +32,7 @@ func main() {
 			WaitTimeSeconds:     5,
 		})
 		if err != nil {
-			log.Printf("Erro ao receber mensagens: %v", err)
+			log.Printf("read messages error: %v", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
@@ -41,13 +41,14 @@ func main() {
 			var user models.User
 			err := json.Unmarshal([]byte(*msg.Body), &user)
 			if err != nil {
-				log.Printf("Erro ao desserializar mensagem: %v", err)
+				log.Printf("unmarshal error: %v", err)
 				continue
 			}
 
+			log.Printf("creating user: %v", user.Email)
 			err = service.CreateUser(ctx, &user)
 			if err != nil {
-				log.Printf("Create user error: %v", err)
+				log.Printf("create user error: %v", err)
 			}
 
 			_, err = aws.SQSClient.DeleteMessage(ctx, &sqs.DeleteMessageInput{
@@ -55,7 +56,7 @@ func main() {
 				ReceiptHandle: msg.ReceiptHandle,
 			})
 			if err != nil {
-				log.Printf("Erro ao deletar mensagem: %v", err)
+				log.Printf("delete message error: %v", err)
 			}
 		}
 
