@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rflpazini/observability/internal/observability"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 )
@@ -23,14 +24,19 @@ func RegisterRoutes(e *echo.Echo) {
 }
 
 func HomeHandler(c echo.Context) error {
+	observability.RecordCustomRequestMetrics(c.Request().Context())
+
 	return c.JSON(http.StatusOK, &Response{Message: "Hello, World!"})
 }
 
 func ProcessHandler(c echo.Context) error {
+	start := time.Now()
 	_, span := otel.Tracer("process-tracer").Start(c.Request().Context(), "ProcessData")
 	defer span.End()
 
 	time.Sleep(time.Duration(rand.Intn(200)) * time.Millisecond)
+
+	defer observability.RecordRequestMetrics(c.Request().Context(), time.Since(start))
 
 	if rand.Intn(100) < 20 {
 		span.SetStatus(codes.Error, "error")

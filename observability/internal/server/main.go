@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 
@@ -12,7 +13,7 @@ import (
 
 func Run(ctx context.Context) error {
 	observability.InitMeterProvider()
-	tp := observability.InitTracerProvider()
+	tp := observability.InitTracer()
 	defer func() {
 		if err := observability.ShutdownTracerProvider(tp); err != nil {
 			log.Fatalf("Error shutting down the TracerProvider: %v", err)
@@ -26,7 +27,7 @@ func Run(ctx context.Context) error {
 	api.RegisterRoutes(e)
 
 	go func() {
-		if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {
+		if err := e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("Error starting the server: %v", err)
 		}
 	}()
