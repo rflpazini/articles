@@ -21,7 +21,7 @@ func Run(ctx context.Context) error {
 
 	e := echo.New()
 
-	e.Use(observability.Middleware())
+	e.Use(Middleware())
 
 	api.RegisterRoutes(e)
 
@@ -39,4 +39,12 @@ func Run(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func Middleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			return next(c)
+		}
+	}
 }

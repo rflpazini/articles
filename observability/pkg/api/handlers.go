@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/rflpazini/observability/internal/observability"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 )
@@ -18,7 +18,7 @@ type Response struct {
 
 func RegisterRoutes(e *echo.Echo) {
 	e.GET("/", HomeHandler)
-	e.GET("/metrics", observability.MetricsHandler())
+	e.GET("/metrics", MetricsHandler())
 	e.GET("/process", ProcessHandler)
 }
 
@@ -49,4 +49,8 @@ func ProcessHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+func MetricsHandler() echo.HandlerFunc {
+	return echo.WrapHandler(promhttp.Handler())
 }
