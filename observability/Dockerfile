@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o obv-api ./cmd/service
+RUN CGO_ENABLED=0 GOOS=linux go build -o obv-handler ./cmd/service
 
 FROM scratch
 WORKDIR /app

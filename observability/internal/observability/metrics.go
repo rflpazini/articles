@@ -33,7 +33,7 @@ func InitMeterProvider() {
 
 	otel.SetMeterProvider(meterProvider)
 
-	meter := meterProvider.Meter("observability-api")
+	meter := meterProvider.Meter("observability-handler")
 
 	requestCounter, err = meter.Int64Counter(
 		"http_requests_total",

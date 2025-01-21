@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1
+FROM golang:1.23-alpine AS builder
+WORKDIR /tests
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN go build -o smoke-test ./tests/smoke_test.go
+
+FROM alpine:3.21
+WORKDIR /tests
+COPY --from=builder /tests/smoke-test .
+CMD ["./smoke-test"]
+

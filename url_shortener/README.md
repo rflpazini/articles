@@ -21,7 +21,7 @@ url_shortener
 │     ├── service.go             # Business logic for URL shortening
 │     └── service_test.go        # Unit tests for the shortener service
 ├── pkg
-│ ├── api
+│ ├── handler
 │ │ └── shortener
 │ │     ├── handler.go                  # HTTP handlers for API endpoints
 │ │     └── handler_integration_test.go # Integration tests for handlers

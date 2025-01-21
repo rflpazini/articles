@@ -24,7 +24,7 @@ func InitTracer() *sdktrace.TracerProvider {
 		sdktrace.WithBatcher(exporter),
 		sdktrace.WithResource(resource.NewWithAttributes(
 			"",
-			attribute.String("service.name", "observability-api"),
+			attribute.String("service.name", "observability-handler"),
 			attribute.String("environment", "development"),
 			attribute.String("version", "1.0.0"),
 		)),

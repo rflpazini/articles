@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0  \
     GOOS=linux  \
-    go build -a -installsuffix cgo -o bookstore-api /app/cmd/bookstore/main.go
+    go build -a -installsuffix cgo -o bookstore-handler /app/cmd/bookstore/main.go
 
 FROM scratch
 WORKDIR /app

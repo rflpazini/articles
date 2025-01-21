@@ -6,10 +6,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o users-handler ./cmd/service
+RUN go build -o smoke-test  ./cmd
 
 FROM scratch
 WORKDIR /app
-COPY --from=builder /app/users-api .
-EXPOSE 8080
-CMD ["./users-api"]
+
+COPY --from=builder /app/smoke-test .
+CMD ["./smoke-test"]
