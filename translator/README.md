@@ -43,7 +43,7 @@ cd translator
 ### 3. Start the application with Docker Compose
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start both the frontend and backend services. The application will be available at http://localhost:8080.
