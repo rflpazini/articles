@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    container_name: go_app_container
+    ports:
+      - "8080:8080"
+    volumes:
+      # Faz bind mount: a pasta 'uploads' do host é mapeada para '/app/uploads' dentro do container
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+
+  db:
+    image: postgres:17-alpine
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    volumes:
+      # Volume nomeado para persistir dados do PostgreSQL
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_data:

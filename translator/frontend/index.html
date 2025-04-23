@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JuriSimples - Tradutor de Juridiquês</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --docker-blue: #1d63ed;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: var(--docker-blue);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--docker-blue);
+            border: none;
+            padding: 10px 20px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1656d1;
+        }
+        
+        .btn-outline-primary {
+            color: var(--docker-blue);
+            border-color: var(--docker-blue);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--docker-blue);
+            color: white;
+        }
+        
+        textarea {
+            resize: none;
+            border-radius: 10px;
+        }
+        
+        .result-box {
+            min-height: 200px;
+            border-radius: 10px;
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner-border {
+            color: var(--docker-blue);
+            width: 3rem;
+            height: 3rem;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--docker-blue);
+        }
+        
+        /* Success toast for copy action */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .toast {
+            background-color: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Focus indicators for accessibility */
+        :focus {
+            outline: 3px solid rgba(29, 99, 237, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Responsive layout for large screens */
+        @media (min-width: 992px) {
+            .split-view .row {
+                display: flex;
+                height: 100%;
+            }
+            
+            .split-view .col-lg-6 {
+                padding: 0 10px;
+            }
+            
+            .split-view textarea,
+            .split-view .result-box {
+                height: 100%;
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1 class="display-4"><i class="bi bi-translate"></i> JuriSimples</h1>
+                <p class="lead">Transformando juridiquês em português claro com IA local usando Docker Model Runner</p>
+            </div>
+        </div>
+
+        <!-- Características do serviço -->
+        <div class="row mb-4">
+            <div class="col-md-4 text-center">
+                <div class="p-3">
+                    <i class="bi bi-shield-lock feature-icon"></i>
+                    <h4>100% Local e Privado</h4>
+                    <p>Seus dados jurídicos nunca saem da sua máquina</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-3">
+                    <i class="bi bi-lightning feature-icon"></i>
+                    <h4>Rápido e Eficiente</h4>
+                    <p>Respostas instantâneas sem latência de APIs externas</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-3">
+                    <i class="bi bi-cash-coin feature-icon"></i>
+                    <h4>Sem Custos de API</h4>
+                    <p>Economize em APIs de IA e tenha uso ilimitado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout toggle (vertical/horizontal) -->
+        <div class="d-flex justify-content-end mb-3">
+            <div class="btn-group" role="group" aria-label="Layout toggle">
+                <button type="button" class="btn btn-outline-secondary active" id="verticalLayout" aria-pressed="true">
+                    <i class="bi bi-layout-split-vertical"></i> Vertical
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="horizontalLayout" aria-pressed="false">
+                    <i class="bi bi-layout-split"></i> Horizontal
+                </button>
+            </div>
+        </div>
+
+        <!-- Área principal (layout vertical por padrão) -->
+        <div id="mainContainer">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Tradutor de Juridiquês</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="badge bg-light text-dark">Powered by Docker Model Runner</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Área de entrada -->
+                            <div class="mb-3">
+                                <label for="textoJuridico" class="form-label">Cole aqui o texto jurídico complicado:</label>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <small id="charCount" class="text-muted">0 caracteres</small>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="clearText()" aria-label="Limpar texto">
+                                        <i class="bi bi-x-lg"></i> Limpar
+                                    </button>
+                                </div>
+                                <textarea class="form-control" id="textoJuridico" rows="6" placeholder="Ex: Fica o réu condenado a arcar com o ônus da sucumbência, bem como ao pagamento de honorários advocatícios, os quais arbitro em 15% sobre o valor da causa..." aria-describedby="charCount"></textarea>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button id="btnTraduzir" class="btn btn-primary" onclick="traduzir()">
+                                    <i class="bi bi-magic"></i> Traduzir para Português Claro
+                                </button>
+                            </div>
+                            
+                            <!-- Loader -->
+                            <div id="loading" class="loading my-4" aria-live="polite" role="status">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Traduzindo...</span>
+                                </div>
+                                <p class="mt-2">Estamos traduzindo com IA local... Aguarde um momento!</p>
+                            </div>
+                            
+                            <!-- Resultado -->
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label for="resultado" class="form-label mb-0">Tradução em português claro:</label>
+                                    <div class="d-flex">
+                                        <div class="form-check form-switch me-2">
+                                            <input class="form-check-input" type="checkbox" id="typingEffect" checked aria-label="Ativar efeito de digitação">
+                                            <label class="form-check-label" for="typingEffect">Efeito de digitação</label>
+                                        </div>
+                                        <button id="copyBtn" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard()" aria-label="Copiar para área de transferência">
+                                            <i class="bi bi-clipboard"></i> Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="resultado" class="result-box" aria-live="polite"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exemplo de casos -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Exemplos de textos para tentar</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Decisão Judicial</h6>
+                                            <p class="card-text">Indefiro o pedido de tutela de urgência, porquanto ausentes os requisitos autorizadores de sua concessão, mormente no que concerne à probabilidade do direito invocado.</p>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="usarExemplo(this)">Usar este exemplo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Contrato</h6>
+                                            <p class="card-text">As partes signatárias deste instrumento obrigam-se ao seu fiel cumprimento, a qualquer título, por si, seus herdeiros ou sucessores.</p>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="usarExemplo(this)">Usar este exemplo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Petição</h6>
+                                            <p class="card-text">Requer-se a Vossa Excelência a juntada da inclusa procuração ad judicia et extra, para que surta seus jurídicos e legais efeitos.</p>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="usarExemplo(this)">Usar este exemplo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast para mensagens de sucesso -->
+        <div class="toast-container" style="display: none;">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i> <span id="toastMessage">Copiado com sucesso!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <footer class="mt-5 text-center text-muted">
+            <p>Desenvolvido com <i class="bi bi-heart-fill text-danger"></i> usando Go, Docker Model Runner e Bootstrap</p>
+            <p><small>Todos os textos são processados 100% localmente usando Docker Model Runner</small></p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const API_URL = "/api";
+        
+        // Armazenar os exemplos
+        const EXEMPLOS = [
+            {
+                titulo: "Decisão Judicial",
+                texto: "Indefiro o pedido de tutela de urgência, porquanto ausentes os requisitos autorizadores de sua concessão, mormente no que concerne à probabilidade do direito invocado."
+            },
+            {
+                titulo: "Contrato",
+                texto: "As partes signatárias deste instrumento obrigam-se ao seu fiel cumprimento, a qualquer título, por si, seus herdeiros ou sucessores."
+            },
+            {
+                titulo: "Petição",
+                texto: "Requer-se a Vossa Excelência a juntada da inclusa procuração ad judicia et extra, para que surta seus jurídicos e legais efeitos."
+            }
+        ];
+
+        // Inicializar contagem de caracteres
+        document.addEventListener('DOMContentLoaded', function() {
+            // Registrar listener para contagem de caracteres
+            document.getElementById('textoJuridico').addEventListener('input', updateCharCount);
+            
+            // Registrar listeners para alternar layout
+            document.getElementById('verticalLayout').addEventListener('click', setVerticalLayout);
+            document.getElementById('horizontalLayout').addEventListener('click', setHorizontalLayout);
+            
+            // Atualizar contagem inicial
+            updateCharCount();
+        });
+
+        function updateCharCount() {
+            const text = document.getElementById('textoJuridico').value;
+            document.getElementById('charCount').textContent = text.length + ' caracteres';
+        }
+
+        function traduzir() {
+            const text = document.getElementById('textoJuridico').value;
+            const result = document.getElementById('resultado');
+            const loading = document.getElementById('loading');
+            const btnTraduzir = document.getElementById('btnTraduzir');
+            
+            if (!text.trim()) {
+                result.innerHTML = '<div class="alert alert-warning">Por favor, insira um texto para traduzir.</div>';
+                return;
+            }
+            
+            // Mostrar loader
+            loading.style.display = 'block';
+            result.innerHTML = '';
+            btnTraduzir.disabled = true;
+            
+            // Enviar requisição para a API
+            fetch(`${API_URL}/translate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na requisição: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                btnTraduzir.disabled = false;
+                
+                if (data.translation) {
+                    // Adicionar resultado com ou sem efeito de digitação
+                    if (document.getElementById('typingEffect').checked) {
+                        typeEffect(data.translation, result);
+                    } else {
+                        result.textContent = data.translation;
+                    }
+                } else {
+                    result.innerHTML = '<div class="alert alert-danger">Não foi possível obter uma tradução.</div>';
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                btnTraduzir.disabled = false;
+                result.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5><i class="bi bi-exclamation-triangle-fill"></i> Ops! Tivemos um problema.</h5>
+                        <p>${error.message}</p>
+                        <hr>
+                        <p class="mb-0">Verifique se o servidor está rodando corretamente.</p>
+                    </div>
+                `;
+            });
+        }
+        
+        function usarExemplo(button) {
+            const exemplo = button.previousElementSibling.textContent;
+            document.getElementById('textoJuridico').value = exemplo;
+            updateCharCount();
+            
+            // Rolar até o textarea
+            document.getElementById('textoJuridico').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Efeito de digitação
+        function typeEffect(text, element) {
+            const speed = 10; // velocidade de digitação
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+        
+        // Copiar resultado para a área de transferência
+        function copyToClipboard() {
+            const text = document.getElementById('resultado').textContent;
+            if (!text) return;
+            
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('Copiado com sucesso!'))
+                .catch(() => showToast('Falha ao copiar', true));
+        }
+        
+        // Exibir mensagem de toast
+        function showToast(message, isError = false) {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.querySelector('.toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            if (isError) {
+                toast.style.backgroundColor = '#f44336';
+            } else {
+                toast.style.backgroundColor = '#4caf50';
+            }
+            
+            toastMessage.textContent = message;
+            toastContainer.style.display = 'block';
+            
+            setTimeout(() => {
+                toastContainer.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Limpar formulário
+        function clearText() {
+            document.getElementById('textoJuridico').value = '';
+            document.getElementById('resultado').innerHTML = '';
+            updateCharCount();
+        }
+        
+        // Renderizar os exemplos
+        function renderExamples(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            let html = '';
+            EXEMPLOS.forEach((exemplo, index) => {
+                html += `
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">${exemplo.titulo}</h6>
+                                <p class="card-text">${exemplo.texto}</p>
+                                <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(${index})">Usar este exemplo</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Usar exemplo pelo índice (funciona em ambos os layouts)
+        function usarExemploByIndex(index) {
+            const exemplo = EXEMPLOS[index];
+            if (exemplo) {
+                document.getElementById('textoJuridico').value = exemplo.texto;
+                updateCharCount();
+                document.getElementById('textoJuridico').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Alternar para layout vertical
+        function setVerticalLayout() {
+            // Salvar o conteúdo atual do textarea e resultado
+            const currentText = document.getElementById('textoJuridico')?.value || '';
+            const currentResult = document.getElementById('resultado')?.innerHTML || '';
+            const useTypingEffect = document.getElementById('typingEffect')?.checked || true;
+            
+            // Atualizar estado dos botões
+            document.getElementById('verticalLayout').classList.add('active');
+            document.getElementById('verticalLayout').setAttribute('aria-pressed', 'true');
+            document.getElementById('horizontalLayout').classList.remove('active');
+            document.getElementById('horizontalLayout').setAttribute('aria-pressed', 'false');
+            
+            // Recriar o container principal com layout vertical
+            const container = document.getElementById('mainContainer');
+            container.innerHTML = `
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Tradutor de Juridiquês</h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span class="badge bg-light text-dark">Powered by Docker Model Runner</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Área de entrada -->
+                                <div class="mb-3">
+                                    <label for="textoJuridico" class="form-label">Cole aqui o texto jurídico complicado:</label>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <small id="charCount" class="text-muted">0 caracteres</small>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="clearText()" aria-label="Limpar texto">
+                                            <i class="bi bi-x-lg"></i> Limpar
+                                        </button>
+                                    </div>
+                                    <textarea class="form-control" id="textoJuridico" rows="6" placeholder="Ex: Fica o réu condenado a arcar com o ônus da sucumbência, bem como ao pagamento de honorários advocatícios, os quais arbitro em 15% sobre o valor da causa..." aria-describedby="charCount"></textarea>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button id="btnTraduzir" class="btn btn-primary" onclick="traduzir()">
+                                        <i class="bi bi-magic"></i> Traduzir para Português Claro
+                                    </button>
+                                </div>
+                                
+                                <!-- Loader -->
+                                <div id="loading" class="loading my-4" aria-live="polite" role="status">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Traduzindo...</span>
+                                    </div>
+                                    <p class="mt-2">Estamos traduzindo com IA local... Aguarde um momento!</p>
+                                </div>
+                                
+                                <!-- Resultado -->
+                                <div class="mt-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label for="resultado" class="form-label mb-0">Tradução em português claro:</label>
+                                        <div class="d-flex">
+                                            <div class="form-check form-switch me-2">
+                                                <input class="form-check-input" type="checkbox" id="typingEffect" checked aria-label="Ativar efeito de digitação">
+                                                <label class="form-check-label" for="typingEffect">Efeito de digitação</label>
+                                            </div>
+                                            <button id="copyBtn" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard()" aria-label="Copiar para área de transferência">
+                                                <i class="bi bi-clipboard"></i> Copiar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="resultado" class="result-box" aria-live="polite"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Exemplo de casos -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Exemplos de textos para tentar</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Decisão Judicial</h6>
+                                                <p class="card-text">Indefiro o pedido de tutela de urgência, porquanto ausentes os requisitos autorizadores de sua concessão, mormente no que concerne à probabilidade do direito invocado.</p>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(0)">Usar este exemplo</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Contrato</h6>
+                                                <p class="card-text">As partes signatárias deste instrumento obrigam-se ao seu fiel cumprimento, a qualquer título, por si, seus herdeiros ou sucessores.</p>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(1)">Usar este exemplo</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Petição</h6>
+                                                <p class="card-text">Requer-se a Vossa Excelência a juntada da inclusa procuração ad judicia et extra, para que surta seus jurídicos e legais efeitos.</p>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(2)">Usar este exemplo</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Restaurar o estado
+            restoreStateAfterLayoutChange(currentText, currentResult, useTypingEffect);
+        }
+        
+        // Alternar para layout horizontal
+        function setHorizontalLayout() {
+            // Salvar o conteúdo atual do textarea e resultado
+            const currentText = document.getElementById('textoJuridico')?.value || '';
+            const currentResult = document.getElementById('resultado')?.innerHTML || '';
+            const useTypingEffect = document.getElementById('typingEffect')?.checked || true;
+            
+            // Atualizar estado dos botões
+            document.getElementById('horizontalLayout').classList.add('active');
+            document.getElementById('horizontalLayout').setAttribute('aria-pressed', 'true');
+            document.getElementById('verticalLayout').classList.remove('active');
+            document.getElementById('verticalLayout').setAttribute('aria-pressed', 'false');
+            
+            // Recriar o container principal com layout horizontal
+            const container = document.getElementById('mainContainer');
+            container.innerHTML = `
+                <div class="row split-view">
+                    <div class="col-lg-6">
+                        <div class="card mb-4 h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Texto Jurídico</h5>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <small id="charCount" class="text-muted">0 caracteres</small>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="clearText()" aria-label="Limpar texto">
+                                        <i class="bi bi-x-lg"></i> Limpar
+                                    </button>
+                                </div>
+                                <textarea class="form-control flex-grow-1" id="textoJuridico" placeholder="Cole aqui o texto jurídico complicado..." aria-describedby="charCount"></textarea>
+                                <div class="d-grid mt-3">
+                                    <button id="btnTraduzir" class="btn btn-primary" onclick="traduzir()">
+                                        <i class="bi bi-magic"></i> Traduzir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4 h-100">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-translate"></i> Português Claro</h5>
+                                    <div class="d-flex">
+                                        <div class="form-check form-switch me-2">
+                                            <input class="form-check-input" type="checkbox" id="typingEffect" checked aria-label="Ativar efeito de digitação">
+                                            <label class="form-check-label" for="typingEffect">Efeito</label>
+                                        </div>
+                                        <button id="copyBtn" class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard()" aria-label="Copiar para área de transferência">
+                                            <i class="bi bi-clipboard"></i> Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body position-relative">
+                                <!-- Loader -->
+                                <div id="loading" class="loading position-absolute top-50 start-50 translate-middle" style="z-index: 10;" aria-live="polite" role="status">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Traduzindo...</span>
+                                        </div>
+                                    <p class="mt-2">Traduzindo...</p>
+                                </div>
+                                
+                                <div id="resultado" class="result-box h-100" aria-live="polite"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Exemplo de casos no layout horizontal -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Exemplos de textos para tentar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Decisão Judicial</h6>
+                                        <p class="card-text">Indefiro o pedido de tutela de urgência, porquanto ausentes os requisitos autorizadores de sua concessão, mormente no que concerne à probabilidade do direito invocado.</p>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(0)">Usar este exemplo</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Contrato</h6>
+                                        <p class="card-text">As partes signatárias deste instrumento obrigam-se ao seu fiel cumprimento, a qualquer título, por si, seus herdeiros ou sucessores.</p>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(1)">Usar este exemplo</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Petição</h6>
+                                        <p class="card-text">Requer-se a Vossa Excelência a juntada da inclusa procuração ad judicia et extra, para que surta seus jurídicos e legais efeitos.</p>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="usarExemploByIndex(2)">Usar este exemplo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Restaurar o estado
+            restoreStateAfterLayoutChange(currentText, currentResult, useTypingEffect);
+        }
+        
+        // Restaurar estado depois de alternar layout
+        function restoreStateAfterLayoutChange(text, result, useTypingEffect) {
+            // Recuperar referências aos novos elementos
+            const textareaEl = document.getElementById('textoJuridico');
+            const resultEl = document.getElementById('resultado');
+            const typingEffectEl = document.getElementById('typingEffect');
+            
+            // Restaurar valores
+            if (textareaEl) {
+                textareaEl.value = text;
+                textareaEl.addEventListener('input', updateCharCount);
+            }
+            
+            if (resultEl) {
+                resultEl.innerHTML = result;
+            }
+            
+            if (typingEffectEl) {
+                typingEffectEl.checked = useTypingEffect;
+            }
+            
+            // Atualizar contagem de caracteres
+            updateCharCount();
+        }
+    </script>
+</body>
+</html>

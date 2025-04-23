@@ -1,0 +1,32 @@
+services:
+  # Frontend web server
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - translator-network
+    depends_on:
+      - backend
+
+  # Backend API server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # Remove the Docker socket mount
+    environment:
+      - SERVER_PORT=3000
+      - ALLOWED_ORIGINS=*
+      - MODEL_NAME=ai/llama3.2:1B-Q8_0
+      # Use the host.docker.internal hostname to access the host machine
+      - MODEL_ENDPOINT=http://host.docker.internal:12434/engines/llama.cpp/v1/chat/completions
+      - LOG_LEVEL=info
+    networks:
+      - translator-network
+
+networks:
+  translator-network:
+    driver: bridge
