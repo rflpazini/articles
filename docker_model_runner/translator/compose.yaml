@@ -8,6 +8,15 @@ services:
       - "8080:80"
     networks:
       - translator-network
+    # Add the develop section for file watching
+    develop:
+      watch:
+        - path: ./frontend/index.html
+          target: /usr/share/nginx/html/index.html
+          action: sync
+        - path: ./frontend/nginx.conf
+          target: /etc/nginx/conf.d/default.conf
+          action: sync+restart
     depends_on:
       - backend
 
@@ -16,12 +25,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    # Remove the Docker socket mount
     environment:
       - SERVER_PORT=3000
       - ALLOWED_ORIGINS=*
       - MODEL_NAME=ai/llama3.2:1B-Q8_0
-      # Use the host.docker.internal hostname to access the host machine
       - MODEL_ENDPOINT=http://host.docker.internal:12434/engines/llama.cpp/v1/chat/completions
       - LOG_LEVEL=info
     networks:

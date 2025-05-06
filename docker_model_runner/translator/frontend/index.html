@@ -24,10 +24,15 @@
         }
         
         .card-header {
-            background-color: var(--docker-blue);
-            color: white;
+            background-color: #f6f5f4;
+            color: rgb(45, 45, 45);
             border-radius: 15px 15px 0 0 !important;
             font-weight: bold;
+        }
+
+        .b-center {
+            align-content: center;
+            text-align: center;
         }
         
         .btn-primary {
@@ -108,6 +113,7 @@
             .split-view .row {
                 display: flex;
                 height: 100%;
+                margin-bottom: 10px;
             }
             
             .split-view .col-lg-6 {
@@ -133,7 +139,7 @@
         </div>
 
         <!-- Características do serviço -->
-        <div class="row mb-4">
+        <!-- <div class="row mb-4">
             <div class="col-md-4 text-center">
                 <div class="p-3">
                     <i class="bi bi-shield-lock feature-icon"></i>
@@ -155,7 +161,7 @@
                     <p>Economize em APIs de IA e tenha uso ilimitado</p>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Layout toggle (vertical/horizontal) -->
         <div class="d-flex justify-content-end mb-3">
@@ -197,7 +203,7 @@
                                 <textarea class="form-control" id="textoJuridico" rows="6" placeholder="Ex: Fica o réu condenado a arcar com o ônus da sucumbência, bem como ao pagamento de honorários advocatícios, os quais arbitro em 15% sobre o valor da causa..." aria-describedby="charCount"></textarea>
                             </div>
                             
-                            <div class="d-grid">
+                            <div class="b-center">
                                 <button id="btnTraduzir" class="btn btn-primary" onclick="traduzir()">
                                     <i class="bi bi-magic"></i> Traduzir para Português Claro
                                 </button>
@@ -524,7 +530,7 @@
                                     <textarea class="form-control" id="textoJuridico" rows="6" placeholder="Ex: Fica o réu condenado a arcar com o ônus da sucumbência, bem como ao pagamento de honorários advocatícios, os quais arbitro em 15% sobre o valor da causa..." aria-describedby="charCount"></textarea>
                                 </div>
                                 
-                                <div class="d-grid">
+                                <div>
                                     <button id="btnTraduzir" class="btn btn-primary" onclick="traduzir()">
                                         <i class="bi bi-magic"></i> Traduzir para Português Claro
                                     </button>
