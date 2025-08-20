@@ -3,51 +3,50 @@ package main
 import (
 	jsonv2 "encoding/json/v2"
 	"fmt"
+	"strings"
+	"time"
 )
 
 func main() {
-	complexJSON := `{
-        "data": {
-            "items": [
-                {"id": 1, "values": [1.1, 2.2, 3.3, 4.4, 5.5]},
-                {"id": 2, "values": [6.6, 7.7, 8.8, 9.9, 10.0]},
-                {"id": 3, "values": [11.1, 12.2, 13.3, 14.4, 15.5]}
-            ],
-            "metadata": {
-                "count": 3,
-                "sum": 120.0,
-                "avg": 40.0
-            }
-        },
-        "config": {
-            "precision": 2,
-            "format": "decimal"
-        }
-    }`
+	timeSeriesData := `{
+		"metric": "cpu_usage",
+		"timestamps": [1609459200, 1609459260, 1609459320, 1609459380, 1609459440],
+		"values": [45.2, 67.8, 23.1, 89.5, 12.7, 56.3, 78.9, 34.6, 91.2, 18.4],
+		"labels": ["server1", "server2", "server3", "server4", "server5"]
+	}`
 
-	// v2 otimiza especialmente este tipo de estrutura:
-	// - Arrays de números (fast path para []float64)
-	// - Objetos aninhados com tipos primitivos
-	// - Maps com chaves string conhecidas
-	var result struct {
-		Data struct {
-			Items []struct {
-				ID     int       `json:"id"`
-				Values []float64 `json:"values"` // fast path otimizado
-			} `json:"items"`
-			Metadata map[string]float64 `json:"metadata"` // fast path otimizado
-		} `json:"data"`
-		Config map[string]interface{} `json:"config"`
+	// Repete o JSON para simular um dataset maior
+	// Cada item separado por vírgula
+	repeticoes := 1000
+	bigData := strings.Repeat(timeSeriesData+",", repeticoes-1) + timeSeriesData
+	bigJSON := "[" + bigData + "]"
+
+	type TimeSeriesPoint struct {
+		Metric     string    `json:"metric"`
+		Timestamps []int64   `json:"timestamps"`
+		Values     []float64 `json:"values"`
+		Labels     []string  `json:"labels"`
 	}
 
-	err := jsonv2.Unmarshal([]byte(complexJSON), &result)
+	start := time.Now()
+
+	var results []TimeSeriesPoint
+	err := jsonv2.Unmarshal([]byte(bigJSON), &results)
+
+	parseTime := time.Since(start)
+
 	if err != nil {
-		fmt.Printf("Erro: %v\\n", err)
+		fmt.Printf("Erro: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Processados %d items\\n", len(result.Data.Items))
-	for _, item := range result.Data.Items {
-		fmt.Printf("Item %d tem %d valores\\n", item.ID, len(item.Values))
+	totalValues := 0
+	for _, result := range results {
+		totalValues += len(result.Values)
 	}
+
+	fmt.Printf("Parsed %d time series points com %d valores em %v\n",
+		len(results), totalValues, parseTime)
+	fmt.Printf("Throughput: %.0f valores/segundo\n",
+		float64(totalValues)/parseTime.Seconds())
 }
