@@ -1,0 +1,8 @@
+name: ${PROJECT_NAME:-preview}
+services:
+  app:
+    image: ${IMAGE_REF}
+    environment:
+      SUBDOMAIN: ${SUBDOMAIN}
+    ports:
+      - "8090:8080"
