@@ -29,7 +29,7 @@ func main() {
 		sub = "demo.127.0.0.1.sslip.io"
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Preview online at %s\n", sub)
+		fmt.Fprintf(w, "Ephemeral preview ready at %s\n", sub)
 	})
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -48,7 +48,7 @@ func main() {
 			return
 		}
 	})
-	addr := ":8080"
+	addr := ":8090"
 	log.Printf("listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }

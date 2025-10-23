@@ -2,13 +2,17 @@ services:
   traefik:
     image: traefik:v3.5
     command:
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --providers.file.watch=true
       - --entrypoints.web.address=:80
+      - --api.dashboard=true
+      - --entrypoints.traefik.address=:8080
     ports:
       - "80:80"
+      - "8080:8080"   # Dashboard for troubleshooting
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
     networks:
       - edge
     labels:

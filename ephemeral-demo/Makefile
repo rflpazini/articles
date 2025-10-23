@@ -10,11 +10,19 @@ PROJECT_NAME ?= demo
 COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 VERSION ?= $(TAG)
 
-.PHONY: traefik-up build preview-up open teardown rebake
+.PHONY: traefik-up traefik-down traefik-logs build preview-up open teardown rebake status
 
-traefik-up: ## Note: Traefik requires Docker socket access (blocked by org policy). Using direct port mapping instead.
-	@echo "⚠️  Traefik disabled due to Enhanced Container Isolation policy"
-	@echo "Using direct port mapping on localhost:8080 instead"
+traefik-up: ## Start Traefik with File provider (ECI compatible)
+	@echo "🚀 Starting Traefik..."
+	docker compose -f deploy/compose.traefik.yml up -d
+	@echo "Traefik running at http://localhost:80"
+	@echo "Dashboard available at http://localhost:8080"
+
+traefik-down: ## Stop Traefik
+	docker compose -f deploy/compose.traefik.yml down
+
+traefik-logs: ## Show Traefik logs
+	docker compose -f deploy/compose.traefik.yml logs -f
 
 build:
 	docker buildx bake --file docker-bake.hcl \
@@ -31,8 +39,13 @@ preview-up:
 	docker compose -f deploy/compose.preview.yml up -d
 
 open:
-	@echo "URL: http://localhost:8090"
+	@echo "📍 Direct access (port): http://localhost:8090"
+	@echo "🌐 Access via Traefik: http://demo.127.0.0.1.sslip.io"
 	@curl -sS "http://localhost:8090/health" || true
+
+status: ## Show container status
+	@echo "🔍 Container status:"
+	@docker ps --filter "name=traefik" --filter "name=$(PROJECT_NAME)" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 teardown:
 	IMAGE_REF=$(IMAGE_REF) SUBDOMAIN=$(SUBDOMAIN) PROJECT_NAME=$(PROJECT_NAME) \

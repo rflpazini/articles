@@ -6,3 +6,9 @@ services:
       SUBDOMAIN: ${SUBDOMAIN}
     ports:
       - "8090:8080"
+    networks:
+      - edge
+
+networks:
+  edge:
+    external: true

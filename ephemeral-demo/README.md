@@ -11,7 +11,7 @@ Prereqs
 
 Warm up images before the talk
 ```
-docker pull traefik:v3.1 golang:1.22 gcr.io/distroless/base-debian12:nonroot
+docker pull traefik:v3.5 golang:1.25 gcr.io/distroless/base-debian12:nonroot
 ```
 
 Run the 6 minute sequence

@@ -1,0 +1,19 @@
+entryPoints:
+  web:
+    address: ":80"
+
+# Usando File provider ao invés de Docker provider (compatível com ECI)
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# Logging para debug
+log:
+  level: INFO
+
+# Opcional: habilitar dashboard para troubleshooting
+api:
+  dashboard: true
+  insecure: true
+
