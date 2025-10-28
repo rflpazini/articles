@@ -37,7 +37,6 @@ build:
 	  --set app.args.COMMIT=$(COMMIT)
 
 rebake: ## Quick rebuild using cache
-	@echo "🔨 Rebuilding with inline cache..."
 	$(MAKE) build TAG=$(shell date +%H%M%S)
 
 preview-up:
