@@ -1,13 +1,33 @@
 # Ship Faster and Test Smarter with Ephemeral Environments
 
-**Problem**
-PRs are hard to review without a live environment. Feedback loops get long. Bugs slip through.
+## Slide 1: Problem
 
-**Architecture**
-Buildx and Bake produce a tagged image. Compose deploys a tiny stack. Traefik routes by host. Teardown is one command.
+"Reviewing PRs without a live environment slows teams and hides bugs. I will show a preview environment that anyone can copy today."
 
-**Value**
-Faster feedback. Less risk. Lower cost. A template you can copy today.
+Action: Show repo tree quickly.
 
-**QR**
-Repo link and a gist with Makefile and Compose files.
+---
+
+## Slide 2: Architecture (20 seconds)
+
+"Buildx and Bake produce a tagged image. Compose deploys the stack. Traefik routes by host. Teardown is one command."
+
+[Diagram showing: Buildx + Bake → Tagged Image → Compose + Traefik → Live URL]
+
+---
+
+## Slide 3: Value and next steps (30 seconds)
+
+Bullets to say out loud:
+
+- Instant PR previews improve feedback and reduce risk
+- Template is portable to a VPS or CI with a few env vars
+- Add a nightly reaper and a PR workflow to automate lifecycle
+
+---
+
+## Slide 4: QR (10 seconds)
+
+Ask the audience to scan and star.
+
+[QR code linking to repository]

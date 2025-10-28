@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 var (
@@ -24,16 +24,23 @@ type HealthResponse struct {
 }
 
 func main() {
+	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
 	sub := os.Getenv("SUBDOMAIN")
 	if sub == "" {
 		sub = "demo.127.0.0.1.sslip.io"
 	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Ephemeral preview ready at %s\n", sub)
-	})
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
 
+	// Routes
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Ephemeral preview at "+sub+"\n")
+	})
+
+	e.GET("/health", func(c echo.Context) error {
 		health := HealthResponse{
 			Status:      "healthy",
 			ImageRef:    os.Getenv("IMAGE_REF"),
@@ -42,13 +49,9 @@ func main() {
 			Version:     Version,
 			BuildTime:   BuildTime,
 		}
-
-		if err := json.NewEncoder(w).Encode(health); err != nil {
-			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-			return
-		}
+		return c.JSON(http.StatusOK, health)
 	})
-	addr := ":8090"
-	log.Printf("listening on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, nil))
+
+	// Start server
+	e.Logger.Fatal(e.Start(":8080"))
 }

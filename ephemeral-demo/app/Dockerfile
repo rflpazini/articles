@@ -1,10 +1,7 @@
 FROM golang:1.25-alpine AS build
 WORKDIR /src
 
-RUN apk --no-cache add ca-certificates git
-
-COPY go.mod ./
-COPY go.su[m] ./ 
+COPY go.mod go.su[m] ./
 RUN --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
@@ -21,8 +18,10 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     -trimpath \
     -o /out/app ./main.go
 
-FROM scratch
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+FROM alpine:3.22
+RUN apk add --no-cache ca-certificates
+
 COPY --from=build /out/app /app
+
 EXPOSE 8080
 ENTRYPOINT ["/app"]

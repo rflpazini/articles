@@ -1,0 +1,2 @@
+# Auto-generated Traefik routing files
+deploy/traefik/dynamic/*.yml

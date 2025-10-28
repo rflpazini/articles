@@ -30,5 +30,4 @@ target "app" {
   cache-to = ["type=inline"]
   sbom = true
   provenance = true
-  platforms = ["linux/amd64", "linux/arm64"]
 }

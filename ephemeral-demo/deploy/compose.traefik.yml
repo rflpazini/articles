@@ -1,22 +1,19 @@
 services:
   traefik:
-    image: traefik:v3.5
+    image: traefik:latest
     command:
       - --providers.file.directory=/etc/traefik/dynamic
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
       - --api.dashboard=true
-      - --entrypoints.traefik.address=:8080
+      - --api.insecure=true
     ports:
       - "80:80"
-      - "8080:8080"   # Dashboard for troubleshooting
+      - "8081:8080"   # Dashboard
     volumes:
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./traefik/dynamic:/etc/traefik/dynamic:ro
     networks:
       - edge
-    labels:
-      - traefik.enable=true
 networks:
   edge:
     name: edge

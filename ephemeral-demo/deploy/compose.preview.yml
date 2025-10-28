@@ -2,10 +2,11 @@ name: ${PROJECT_NAME:-preview}
 services:
   app:
     image: ${IMAGE_REF}
+    container_name: ${PROJECT_NAME}-app
     environment:
       SUBDOMAIN: ${SUBDOMAIN}
-    ports:
-      - "8090:8080"
+      IMAGE_REF: ${IMAGE_REF}
+      PROJECT_NAME: ${PROJECT_NAME}
     networks:
       - edge
 
