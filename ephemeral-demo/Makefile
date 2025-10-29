@@ -55,8 +55,8 @@ generate-traefik-config: ## Generate Traefik routing configuration for the envir
 	@echo "          - url: \"http://$(ENV_NAME)-app:8080\"" >> deploy/traefik/dynamic/$(ENV_NAME).yml
 
 cleanup-preview: ## Stop and remove existing preview containers
-	@docker ps --filter "network=edge" --format "{{.Names}}" | grep -E "\-app$$" | xargs -r docker stop > /dev/null 2>&1 || true
-	@docker ps -a --filter "network=edge" --format "{{.Names}}" | grep -E "\-app$$" | xargs -r docker rm > /dev/null 2>&1 || true
+	@docker stop $(ENV_NAME)-app > /dev/null 2>&1 || true
+	@docker rm $(ENV_NAME)-app > /dev/null 2>&1 || true
 
 preview-up: generate-traefik-config cleanup-preview ## Deploy preview environment
 	@echo "Deploying $(ENV_NAME)..."
