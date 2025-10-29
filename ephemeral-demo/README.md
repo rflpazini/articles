@@ -13,7 +13,7 @@ Use this flow on your laptop first. In the event you can switch the IP to a VPS 
 1. Warm up images
 
 ```bash
-docker pull traefik:v3.1 golang:1.22 gcr.io/distroless/base-debian12:nonroot
+docker pull traefik:latest golang:1.25-alpine alpine:3.22
 ```
 
 2. Start the router
@@ -31,7 +31,7 @@ make build TAG=live-001
 4. Bring up the preview
 
 ```bash
-make preview-up TAG=live-001 SUBDOMAIN=demo.127.0.0.1.sslip.io PROJECT_NAME=demo
+make preview-up TAG=live-001 SUBDOMAIN=demo.127.0.0.1.sslip.io ENV_NAME=demo
 ```
 
 5. Smoke test

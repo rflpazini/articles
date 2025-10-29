@@ -1,12 +1,12 @@
-name: ${PROJECT_NAME:-preview}
+name: ${ENV_NAME:-preview}
 services:
   app:
     image: ${IMAGE_REF}
-    container_name: ${PROJECT_NAME}-app
+    container_name: ${ENV_NAME}-app
     environment:
       SUBDOMAIN: ${SUBDOMAIN}
       IMAGE_REF: ${IMAGE_REF}
-      PROJECT_NAME: ${PROJECT_NAME}
+      ENV_NAME: ${ENV_NAME}
     networks:
       - edge
 

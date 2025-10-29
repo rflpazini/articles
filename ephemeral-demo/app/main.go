@@ -15,18 +15,16 @@ var (
 )
 
 type HealthResponse struct {
-	Status      string `json:"status"`
-	ImageRef    string `json:"image_ref,omitempty"`
-	ProjectName string `json:"project_name,omitempty"`
-	Commit      string `json:"commit,omitempty"`
-	Version     string `json:"version,omitempty"`
-	BuildTime   string `json:"build_time,omitempty"`
+	Status    string `json:"status"`
+	ImageRef  string `json:"image_ref,omitempty"`
+	EnvName   string `json:"environment,omitempty"`
+	Commit    string `json:"commit,omitempty"`
+	Version   string `json:"version,omitempty"`
+	BuildTime string `json:"build_time,omitempty"`
 }
 
 func main() {
 	e := echo.New()
-
-	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
@@ -35,23 +33,21 @@ func main() {
 		sub = "demo.127.0.0.1.sslip.io"
 	}
 
-	// Routes
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Ephemeral preview at "+sub+"\n")
+		return c.String(http.StatusOK, "Ephemeral preview at http://"+sub+"\n")
 	})
 
 	e.GET("/health", func(c echo.Context) error {
 		health := HealthResponse{
-			Status:      "healthy",
-			ImageRef:    os.Getenv("IMAGE_REF"),
-			ProjectName: os.Getenv("PROJECT_NAME"),
-			Commit:      CommitHash,
-			Version:     Version,
-			BuildTime:   BuildTime,
+			Status:    "healthy",
+			ImageRef:  os.Getenv("IMAGE_REF"),
+			EnvName:   os.Getenv("ENV_NAME"),
+			Commit:    CommitHash,
+			Version:   Version,
+			BuildTime: BuildTime,
 		}
 		return c.JSON(http.StatusOK, health)
 	})
 
-	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
 }
